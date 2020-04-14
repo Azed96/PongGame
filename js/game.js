@@ -11,6 +11,9 @@ var game = {
   groundLayer : null,  
   scoreLayer : null,
   playersBallLayer : null,
+
+  wallSound : null,
+  playerSound : null,
   
   ball : {
     width : 10,
@@ -20,18 +23,31 @@ var game = {
     posY : 200,
     directionX : 1,
     directionY : 1,
-    speed : 1,
+    speed : 2,
 
-    bounce : function() {
-      if ( this.posX > game.groundWidth || this.posX < 0 )
+    bounce : function(soundToPlay) {
+      if ( this.posX > game.groundWidth || this.posX < 0 ) {
         this.directionX = -this.directionX;
-      if ( this.posY > game.groundHeight || this.posY < 0  )
-        this.directionY = -this.directionY;      
+        soundToPlay.play();
+      }
+      if ( this.posY > game.groundHeight || this.posY < 0  ) {
+        this.directionY = -this.directionY;
+        soundToPlay.play();
+      }    
     },
 
     move : function() {
       this.posX += this.directionX * this.speed;
       this.posY += this.directionY * this.speed;
+    },
+
+    collide : function(anotherItem) {
+      if ( !( this.posX >= anotherItem.posX + anotherItem.width || this.posX <= anotherItem.posX - this.width
+      || this.posY >= anotherItem.posY + anotherItem.height || this.posY <= anotherItem.posY - this.height ) ) {
+        // Collision
+        return true;
+      } 
+      return false;
     },
   },
 
@@ -42,9 +58,10 @@ var game = {
     posX : 30,
     posY : 200,
     goUp : false,
-    goDown : false
+    goDown : false,
+    originalPosition : "left"
   },
-   
+     
   playerTwo : {
     width : 10,
     height : 50,
@@ -52,9 +69,9 @@ var game = {
     posX : 650,
     posY : 200,
     goUp : false,
-    goDown : false
+    goDown : false,
+    originalPosition : "right"
   },
-
 
   init : function() {
     this.groundLayer = game.display.createLayer("terrain", this.groundWidth, this.groundHeight, undefined, 0, "#000000", 0, 0); 
@@ -73,6 +90,12 @@ var game = {
     this.initKeyboard(game.control.onKeyDown, game.control.onKeyUp);
     this.initMouse(game.control.onMouseMove);
 
+    this.wallSound = new Audio("./sound/wall.ogg");
+    this.playerSound = new Audio("./sound/player.ogg");
+
+    game.ai.setPlayerAndBall(this.playerTwo, this.ball);
+    //this.collideBallWithPlayersAndAction();
+    //this.moveBall();
   },
 
   displayScore : function(scorePlayer1, scorePlayer2) {
@@ -91,7 +114,7 @@ var game = {
 
   moveBall : function() { 
     this.ball.move();
-    this.ball.bounce();
+    this.ball.bounce(this.wallSound);
     this.displayBall();
   },
 
@@ -123,5 +146,16 @@ var game = {
 
   initMouse : function(onMouseMoveFunction) {
     window.onmousemove = onMouseMoveFunction;
-  }
+  },
+
+  collideBallWithPlayersAndAction : function() { 
+    if ( this.ball.collide(game.playerOne) ) {
+      game.ball.directionX = -game.ball.directionX;
+      this.playerSound.play();
+    }
+    if ( this.ball.collide(game.playerTwo) ) {
+      game.ball.directionX = -game.ball.directionX;
+      this.playerSound.play();
+    }
+  },  
 };
