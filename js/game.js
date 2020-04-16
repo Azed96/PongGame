@@ -114,6 +114,9 @@ var game = {
     this.displayScore(0,0);
     this.displayBall(200,200);
     this.displayPlayers();
+
+    this.startGameButton = document.getElementById("startGame");
+    this.initStartGameButton();
     
     this.initKeyboard(game.control.onKeyDown, game.control.onKeyUp);
     this.initMouse(game.control.onMouseMove);

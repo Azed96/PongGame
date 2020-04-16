@@ -52,5 +52,5 @@ game.control = {
           game.reinitGame();
           game.gameOn = true;
         }
-      },
+      }
   }

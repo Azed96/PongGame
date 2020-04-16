@@ -1,14 +1,6 @@
 <html>
  <body>
 
-    <div id="menu">
-        <input id="startGame" type="button" value="Start Game">
-    </div>
-    <div id="divGame">
-        
-    </div>
-
-
  </body>
 <script src="js/game.js"></script>
 <script src="js/game.display.js"></script>
@@ -34,7 +26,7 @@
     game.moveBall();
     if ( game.ball.inGame ) {
       game.lostBall();
-    }
+   }
     game.ai.move();
     game.collideBallWithPlayersAndAction();
     requestAnimId = window.requestAnimationFrame(main); // rappel de main au prochain rafraichissement de la page
@@ -45,4 +37,11 @@
   // fin du code isolé
 })();
 </script> 
+
+<div id="menu">
+  <input id="startGame" type="button" value="Start Game">
+</div>
+<div id="divGame">
+  
+</div>
 </html>
