@@ -14,16 +14,22 @@ var game = {
 
   wallSound : null,
   playerSound : null,
-  
+
+  divGame : null,
+
+  gameOn : false,
+  startGameButton : null,
+
   ball : {
     width : 10,
     height : 10,
-    color : "#FFFFFF",
+    color : "#FFD700",
     posX : 200,
     posY : 200,
     directionX : 1,
     directionY : 1,
-    speed : 2,
+    speed : 1,
+    inGame : false,
 
     bounce : function(soundToPlay) {
       if ( this.posX > game.groundWidth || this.posX < 0 ) {
@@ -37,8 +43,10 @@ var game = {
     },
 
     move : function() {
-      this.posX += this.directionX * this.speed;
-      this.posY += this.directionY * this.speed;
+      if ( this.inGame ) {
+        this.posX += this.directionX * this.speed;
+        this.posY += this.directionY * this.speed;
+      }
     },
 
     collide : function(anotherItem) {
@@ -49,6 +57,20 @@ var game = {
       } 
       return false;
     },
+    
+    lost : function(player) {
+      var returnValue = false;
+      if ( player.originalPosition == "left" && this.posX < player.posX - this.width ) {
+        returnValue = true;
+      } else if ( player.originalPosition == "right" && this.posX > player.posX + player.width ) {
+        returnValue = true;
+      }
+      return returnValue;
+    },
+
+    speedUp: function() {
+      this.speed = this.speed + .1;
+    }
   },
 
   playerOne : {
@@ -59,7 +81,9 @@ var game = {
     posY : 200,
     goUp : false,
     goDown : false,
-    originalPosition : "left"
+    originalPosition : "left",
+    score : 0,
+    ai : false
   },
      
   playerTwo : {
@@ -70,23 +94,27 @@ var game = {
     posY : 200,
     goUp : false,
     goDown : false,
-    originalPosition : "right"
+    originalPosition : "right",
+    score : 0,
+    ai : true
   },
 
   init : function() {
-    this.groundLayer = game.display.createLayer("terrain", this.groundWidth, this.groundHeight, undefined, 0, "#000000", 0, 0); 
+    this.divGame = document.getElementById("divGame");
+   
+    this.groundLayer= game.display.createLayer("terrain", this.groundWidth, this.groundHeight, this.divGame, 0, "#000000", 10, 50); 
     game.display.drawRectangleInLayer(this.groundLayer, this.netWidth, this.groundHeight, this.netColor, this.groundWidth/2 - this.netWidth/2, 0);
-    
-    this.scoreLayer = game.display.createLayer("score", this.groundWidth, this.groundHeight, undefined, 1, undefined, 0, 0);
-    game.display.drawTextInLayer(this.scoreLayer, "SCORE", "10px Arial", "#FF0000", 10, 10);
-    
-    this.playersBallLayer = game.display.createLayer("joueursetballe", this.groundWidth, this.groundHeight, undefined, 2, undefined, 0, 0);  
+     
+    this.scoreLayer = game.display.createLayer("score", this.groundWidth, this.groundHeight, this.divGame, 1, undefined, 10, 50);
+    game.display.drawTextInLayer(this.scoreLayer , "SCORE", "10px Arial", "#FF0000", 10, 10);
+     
+    this.playersBallLayer = game.display.createLayer("joueursetballe", this.groundWidth, this.groundHeight, this.divGame, 2, undefined, 10, 50);  
     game.display.drawTextInLayer(this.playersBallLayer, "JOUEURSETBALLE", "10px Arial", "#FF0000", 100, 100);
-  
+     
     this.displayScore(0,0);
-    this.displayBall();
+    this.displayBall(200,200);
     this.displayPlayers();
-
+    
     this.initKeyboard(game.control.onKeyDown, game.control.onKeyUp);
     this.initMouse(game.control.onMouseMove);
 
@@ -94,8 +122,8 @@ var game = {
     this.playerSound = new Audio("./sound/player.ogg");
 
     game.ai.setPlayerAndBall(this.playerTwo, this.ball);
-    //this.collideBallWithPlayersAndAction();
-    //this.moveBall();
+    game.speedUpBall();
+    
   },
 
   displayScore : function(scorePlayer1, scorePlayer2) {
@@ -150,12 +178,130 @@ var game = {
 
   collideBallWithPlayersAndAction : function() { 
     if ( this.ball.collide(game.playerOne) ) {
-      game.ball.directionX = -game.ball.directionX;
+      this.changeBallPath(game.playerOne, game.ball);
       this.playerSound.play();
     }
     if ( this.ball.collide(game.playerTwo) ) {
-      game.ball.directionX = -game.ball.directionX;
+      this.changeBallPath(game.playerTwo, game.ball);
       this.playerSound.play();
     }
-  },  
+  }, 
+
+  lostBall : function() {
+    if ( this.ball.lost(this.playerOne) ) {
+      this.playerTwo.score++;
+      if ( this.playerTwo.score > 9 ) {
+        this.gameOn = false;
+      } else {
+        this.ball.inGame = false;
+     
+        if ( this.playerOne.ai ) { 
+          setTimeout(game.ai.startBall(), 3000);
+        }
+      }
+    } else if ( this.ball.lost(this.playerTwo) ) {
+      this.playerOne.score++;
+      if ( this.playerOne.score > 9 ) {
+        this.gameOn = false;
+      } else {
+        this.ball.inGame = false;
+ 
+        if ( this.playerTwo.ai ) { 
+          setTimeout(game.ai.startBall(), 3000);
+        }
+      }
+    }
+   
+    this.scoreLayer.clear();
+    this.displayScore(this.playerOne.score, this.playerTwo.score);
+  },
+
+  initStartGameButton : function() {
+    this.startGameButton.onclick = game.control.onStartGameClickButton;
+  },
+
+  reinitGame : function() {
+    this.ball.inGame = false;
+    this.ball.speed = 1;
+    this.playerOne.score = 0;
+    this.playerTwo.score = 0;
+    this.scoreLayer.clear();
+    this.displayScore(this.playerOne.score, this.playerTwo.score);
+  },
+
+  ballOnPlayer : function(player, ball) {
+    var returnValue = "CENTER";
+    var playerPositions = player.height/5;
+    if ( ball.posY > player.posY && ball.posY < player.posY + playerPositions ) {
+      returnValue = "TOP";
+    } else if ( ball.posY >= player.posY + playerPositions && ball.posY < player.posY + playerPositions*2 ) {
+      returnValue = "MIDDLETOP";
+    } else if ( ball.posY >= player.posY + playerPositions*2 && ball.posY < player.posY + 
+      player.height - playerPositions ) {
+      returnValue = "MIDDLEBOTTOM";
+    } else if ( ball.posY >= player.posY + player.height - playerPositions && ball.posY < player.posY + 
+      player.height ) {
+      returnValue = "BOTTOM";
+    }
+    return returnValue;
+  },
+
+  changeBallPath : function(player, ball) {
+    if ( player.originalPosition == "left" ) {
+      switch( game.ballOnPlayer(player, ball) ) {
+        case "TOP":
+          ball.directionX = 1;
+          ball.directionY = -3;
+          break;
+        case "MIDDLETOP":
+          ball.directionX = 1;
+          ball.directionY = -1;
+          break;
+        case "CENTER":
+          ball.directionX = 2;
+          ball.directionY = 0;
+          break;
+        case "MIDDLEBOTTOM":
+          ball.directionX = 1;
+          ball.directionY = 1;
+          break;
+        case "BOTTOM":
+          ball.directionX = 1;
+          ball.directionY = 3;
+          break;
+      }
+  } else {
+      switch( game.ballOnPlayer(player, ball) ) {
+        case "TOP":
+          ball.directionX = -1;
+          ball.directionY = -3;
+          break;
+        case "MIDDLETOP":
+          ball.directionX = -1;
+          ball.directionY = -1;
+          break;
+        case "CENTER":
+          ball.directionX = -2;
+          ball.directionY = 0;
+          break;
+        case "MIDDLEBOTTOM":
+          ball.directionX = -1;
+          ball.directionY = 1;
+          break;
+        case "BOTTOM":
+          ball.directionX = -1;
+          ball.directionY = 3;
+          break;
+      }
+    }
+  },
+
+  speedUpBall: function() { 
+    setInterval(function() {
+    game.ball.speedUp();
+  }, 5000);
+  },
+
+
+  
 };

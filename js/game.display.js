@@ -12,7 +12,6 @@ game.display = {
     backgroundColor : "",
     zIndex : "",
 
-    //Pour effacer les traces
     clear : function() {
       this.context2D.clearRect(0, 0, this.canvas.width, this.canvas.height);
     }
