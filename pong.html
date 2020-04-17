@@ -2,11 +2,19 @@
  <body>
 
  </body>
+ <style>
+  @font-face { 
+    font-family: 'DS-DIGIB'; 
+    src: url('./font/ds_digital/DS-DIGIB.TTF'); 
+  }
+  </style>
+  
 <script src="js/game.js"></script>
 <script src="js/game.display.js"></script>
 <script src="js/game.control.js"></script>
 <script src="js/game.keycode.js"></script>
 <script src="js/game.ai.js"></script>
+<script src="conf.js"></script>
 <script>
 (function () {
   // début du code isolé
@@ -39,7 +47,7 @@
 </script> 
 
 <div id="menu">
-  <input id="startGame" type="button" value="Start Game">
+  <input id="startGame" style="width:120px" type="image" src="./img/startBtn.png">
 </div>
 <div id="divGame">
   
