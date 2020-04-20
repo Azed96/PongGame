@@ -2,8 +2,8 @@ var game = {
   groundWidth : 700,
   groundHeight : 400,
   groundColor: "#000000",
-  netWidth : 6,
-  netColor: "#FFFFFF",
+  //netWidth : 6,
+  //netColor: "#FFFFFF",
 
   scorePosPlayer1 : 300,
   scorePosPlayer2 : 365,
