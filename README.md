@@ -28,6 +28,7 @@ To move the racket in this mode, use the up and down button.
 ## Installation
 In a terminal, Please open the file EnLigneTD2 and start the server
 * From the command line: `node index.js`
+
 You don't have to install node-module because I have installed it before with `npm install` & `npm install node --save` & `npm install express --save` & `npm install socket.io --save` 
 
 * To start playing, open the StartGame.html file.
