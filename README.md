@@ -1,8 +1,8 @@
 # Pong Game
-Auther: Azzeddine BOUDA
-level: M1 MIAGE ALT
-Module: Technologie Logiciel
-Professor : M. Didier Courtaud
+- Auther: Azzeddine BOUDA
+- level: M1 MIAGE ALT
+- Module: Technologie Logiciel
+- Professor : M. Didier Courtaud
 
 ## About
 
