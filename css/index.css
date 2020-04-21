@@ -1,0 +1,23 @@
+
+  #divGame{
+    display:block;
+    margin:auto;
+}
+body{
+    font-family: 'Comic Sans MS';
+    background: linear-gradient(rgb(221, 230, 211),rgb(144, 187, 169));
+    color:black;
+}
+.button {
+    background-color: #4CAF50; /* Green */
+    border: none;
+    color: white;
+    padding: 15px 32px;
+    text-align: center;
+    text-decoration: none;
+    /*display: inline-block;*/
+    font-size: 16px;
+    display: block;
+    margin : auto;
+
+  }

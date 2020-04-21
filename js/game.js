@@ -2,8 +2,8 @@ var game = {
   groundWidth : 700,
   groundHeight : 400,
   groundColor: "#000000",
-  //netWidth : 6,
-  //netColor: "#FFFFFF",
+  netWidth : 3,
+  netColor: "#FFFFFF",
 
   scorePosPlayer1 : 300,
   scorePosPlayer2 : 365,
@@ -28,7 +28,7 @@ var game = {
     posY : 200,
     directionX : 1,
     directionY : 1,
-    speed : 1,
+    speed : 3,
     inGame : false,
 
     bounce : function(soundToPlay) {
@@ -76,7 +76,7 @@ var game = {
   playerOne : {
     width : 10,
     height : 50,
-    color : "#FFFFFF",
+    color : "#87CEFA",
     posX : 30,
     posY : 200,
     goUp : false,
@@ -89,7 +89,7 @@ var game = {
   playerTwo : {
     width : 10,
     height : 50,
-    color : "#FFFFFF",
+    color : "#F08080",
     posX : 650,
     posY : 200,
     goUp : false,
@@ -102,14 +102,14 @@ var game = {
   init : function() {
     this.divGame = document.getElementById("divGame");
    
-    this.groundLayer= game.display.createLayer("terrain", this.groundWidth, this.groundHeight, this.divGame, 0, "#000000", 10, 50); 
+    this.groundLayer= game.display.createLayer("terrain", this.groundWidth, this.groundHeight, this.divGame, 0, "#000000", 290, 150); 
     game.display.drawRectangleInLayer(this.groundLayer, this.netWidth, this.groundHeight, this.netColor, this.groundWidth/2 - this.netWidth/2, 0);
      
-    this.scoreLayer = game.display.createLayer("score", this.groundWidth, this.groundHeight, this.divGame, 1, undefined, 10, 50);
-    game.display.drawTextInLayer(this.scoreLayer , "SCORE", "10px Arial", "#FF0000", 10, 10);
+    this.scoreLayer = game.display.createLayer("score", this.groundWidth, this.groundHeight, this.divGame, 1, undefined, 290, 150);
+    game.display.drawTextInLayer(this.scoreLayer , "SCORE", "10px Arial", "#000000", 290, 150);
      
-    this.playersBallLayer = game.display.createLayer("joueursetballe", this.groundWidth, this.groundHeight, this.divGame, 2, undefined, 10, 50);  
-    game.display.drawTextInLayer(this.playersBallLayer, "JOUEURSETBALLE", "10px Arial", "#FF0000", 100, 100);
+    this.playersBallLayer = game.display.createLayer("joueursetballe", this.groundWidth, this.groundHeight, this.divGame, 2, undefined, 290, 150);  
+    game.display.drawTextInLayer(this.playersBallLayer, "JOUEURSETBALLE", "10px Arial", "#FF0000", 290, 150);
      
     this.displayScore(0,0);
     this.displayBall(200,200);
@@ -130,8 +130,8 @@ var game = {
   },
 
   displayScore : function(scorePlayer1, scorePlayer2) {
-    game.display.drawTextInLayer(this.scoreLayer, scorePlayer1, "60px Arial", "#FFFFFF", this.scorePosPlayer1, 55);
-    game.display.drawTextInLayer(this.scoreLayer, scorePlayer2, "60px Arial", "#FFFFFF", this.scorePosPlayer2, 55);
+    game.display.drawTextInLayer(this.scoreLayer, scorePlayer1, "50px Arial", "#FFFFFF", this.scorePosPlayer1, 55);
+    game.display.drawTextInLayer(this.scoreLayer, scorePlayer2, "50px Arial", "#FFFFFF", this.scorePosPlayer2, 55);
   },
 
   displayBall : function() {
@@ -193,8 +193,11 @@ var game = {
   lostBall : function() {
     if ( this.ball.lost(this.playerOne) ) {
       this.playerTwo.score++;
-      if ( this.playerTwo.score > 9 ) {
+      if ( this.playerTwo.score > 4 ) {
+        this.playerTwo.score = 'W';
         this.gameOn = false;
+        this.ball.inGame = false;
+
       } else {
         this.ball.inGame = false;
      
@@ -204,8 +207,10 @@ var game = {
       }
     } else if ( this.ball.lost(this.playerTwo) ) {
       this.playerOne.score++;
-      if ( this.playerOne.score > 9 ) {
+      if ( this.playerOne.score > 4 ) {
+        this.playerOne.score = 'W';
         this.gameOn = false;
+        this.ball.inGame = false;
       } else {
         this.ball.inGame = false;
  
