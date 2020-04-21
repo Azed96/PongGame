@@ -2,10 +2,11 @@ var game = {
   groundWidth : 700,
   groundHeight : 400,
   groundColor: "#000000",
-  netWidth : 3,
-  netColor: "#FFFFFF",
+  //netWidth : 3,
+  //netColor: "#FFFFFF",
 
   scorePosPlayer1 : 300,
+  scorePosPlayerX : 339,
   scorePosPlayer2 : 365,
  
   groundLayer : null,  
@@ -131,6 +132,7 @@ var game = {
 
   displayScore : function(scorePlayer1, scorePlayer2) {
     game.display.drawTextInLayer(this.scoreLayer, scorePlayer1, "50px Arial", "#FFFFFF", this.scorePosPlayer1, 55);
+    game.display.drawTextInLayer(this.scoreLayer, "-", "50px Arial", "#FFFFFF", this.scorePosPlayerX, 55);
     game.display.drawTextInLayer(this.scoreLayer, scorePlayer2, "50px Arial", "#FFFFFF", this.scorePosPlayer2, 55);
   },
 
