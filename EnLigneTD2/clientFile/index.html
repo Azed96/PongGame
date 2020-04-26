@@ -68,7 +68,7 @@
                         end = false;
                     }
                     score.clear();
-                    score.writeText(fileData.player1.score+"  -  "+fileData.player2.score,300,30,40);
+                    score.writeText(fileData.player1.score+"  |  "+fileData.player2.score,300,30,40);
                     movableEle.clear();
                     movableEle.drawJoueur(fileData.player1.posX,fileData.player1.posY,fileData.player1.width,fileData.player1.height);
                     movableEle.drawJoueur(fileData.player2.posX,fileData.player2.posY,fileData.player2.width,fileData.player2.height);
@@ -77,7 +77,7 @@
                 socket.on('gameEnd',function(fileData){
                     score.clear();
                     movableEle.clear();
-                    score.writeText(fileData.player1.score+"  -  "+fileData.player2.score,300,100,40);
+                    score.writeText(fileData.player1.score+"  |  "+fileData.player2.score,300,100,40);
                     score.writeText(`Victoire du ${(fileData.player1.score>fileData.player2.score)?"Joueur 1":"Joueur 2"}`,250,200,20);
                     score.writeText("Envie de rejouer ! Pressez n'importe quelle touche pour rejouer",110,300,20);
                     end = true;
