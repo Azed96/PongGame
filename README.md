@@ -1,8 +1,6 @@
 # Pong Game
 - Author: Azzeddine BOUDA
 - Level: M1 MIAGE ALT
-- Module: Technologie Logiciel
-- Professor : M. Didier Courtaud
 
 ## About
 
